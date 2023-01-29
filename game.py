@@ -22,13 +22,17 @@ class QuizGame(tk.Tk):
         self.resizable(0, 0)
 
         # Game data variables
-        # csv_file = "questions.csv"
         self.questions_file = csv_file
         self.user_answer = tk.StringVar()
 
+        # Keep track of questions and correct answers
         self.question_num = 0
         self.questions_correct = 0
 
+        # Allow Enter key to submit answer
+        self.bind("<Return>", self.submit_question)
+
+        # Build dictionary of questions/answers from CSV file
         self.build_dict()
         self.get_question()
 
@@ -38,23 +42,27 @@ class QuizGame(tk.Tk):
 
     def build_dict(self):
         self.questions_dict = {}
+
+        # Read from the CSV file (more robust error checking takes place in menu.py)
         try:
             with open(self.questions_file, "r") as csv_file:
                 c = csv.reader(csv_file)
-
                 for row in c:
                     self.questions_dict.update({row[0]: row[1::]})
         except FileNotFoundError:
-            print("Uh oh, file not found!")
+            messagebox.showerror(
+                "Error!", "Your CSV file is no longer present.\n\nPlease restart the application and select a CSV file.")
 
+        # Use a list to index and randomly select questions (keys) from the dictionary
+        self.question_list = []
+        [self.question_list.append(i) for i in self.questions_dict.keys()]
+
+# Fetch a random question from the question list and update correct answers
     def get_question(self):
         self.question_num += 1
 
-        question_list = []
-        [question_list.append(i) for i in self.questions_dict.keys()]
-
-        self.question = question_list[(
-            random.randint(0, len(question_list) - 1))]
+        self.question = self.question_list[(
+            random.randint(0, len(self.question_list) - 1))]
 
         self.question_text = f"Question {self.question_num}: \n{self.question}"
 
@@ -62,33 +70,39 @@ class QuizGame(tk.Tk):
         [self.correct_answers.append(i.lower().strip())
          for i in self.questions_dict.get(self.question)]
 
-        # print(self.question, self.correct_answers)
-
+# Check for the correct answer
     def check_answer(self):
         if self.user_answer.get().lower() in self.correct_answers:
             messagebox.showinfo(
                 "Nice!", f"{self.user_answer.get()} is the correct answer :)")
             self.questions_correct += 1
         else:
-            print("u got it wrong lol")
+            # Wrong answer condition
+            pass
 
+# Update the question + answer entry labels
+    def update_widgets(self):
+        self.label_question.config(text=self.question_text)
+        self.user_answer.set("")
+        self.entry_answer.config(textvariable=self.user_answer)
+
+# Tasks to perform upon submitting the answer
+    def submit_question(self, event):
+        self.check_answer()
+        self.get_question()
+        self.update_widgets()
+
+# Set up and place widgets in the application window
     def place_widgets(self):
-        def update_widgets():
-            # Function will update Question and Entry with new values
-            # after Submit button has been clicked
-            label_question.config(text=self.question_text)
-            self.user_answer.set("")
-            entry_answer.config(textvariable=self.user_answer)
-
         # STYLING
         style = ttk.Style()
         style.configure("TButton", font=(
             "calibri", 15), foreground="black", background="white")
 
         # QUESTION TEXT
-        label_question = tk.Label(self,
-                                  text=self.question_text, font="Arial, 15")
-        label_question.pack(pady=25, anchor="n")
+        self.label_question = tk.Label(self,
+                                       text=self.question_text, font="Arial, 15")
+        self.label_question.pack(pady=25, anchor="n")
 
         # separate frame for buttons, text entry
         frame = tk.Frame(self)
@@ -96,15 +110,19 @@ class QuizGame(tk.Tk):
 
         # ANSWER ENTRY BOX
         label_answer = tk.Label(frame, text="Answer: ", font="Arial, 10")
-        entry_answer = ttk.Entry(
+        self.entry_answer = ttk.Entry(
             frame, textvariable=self.user_answer, font="Arial, 12", width=32)
         label_answer.grid(row=0, column=0)
-        entry_answer.grid(row=0, column=1, padx=10, pady=20)
+        self.entry_answer.grid(row=0, column=1, padx=10, pady=20)
 
         # SUBMIT BUTTON
-        btn_submit = ttk.Button(frame, text="Submit", style="TButton",
-                                command=lambda: [self.check_answer(), self.get_question(), update_widgets()])
+        btn_submit = ttk.Button(frame, text="Submit", style="TButton", takefocus=1,
+                                command=lambda: self.submit_question(event=None))
         btn_submit.grid(row=1, columnspan=3)
 
 
-t = QuizGame("questions.csv")
+"""
+# used for testing purposes
+if __name__ == "__main__":
+    t = QuizGame("questions.csv")
+"""

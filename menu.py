@@ -14,6 +14,7 @@ class QuizGameMenu(tk.Tk):
 
         # Window properties
         self.title("Quiz Game")
+        self.game_title = "Example Quiz Game"
         self.protocol("WM_DELETE_WINDOW", self.destroy)
 
         # Window size and placement
@@ -29,6 +30,7 @@ class QuizGameMenu(tk.Tk):
         self.csv_path.set(pathlib.Path("questions.csv"))
 
         # Set up and display window
+
         self.place_widgets()
         self.mainloop()
 
@@ -75,10 +77,8 @@ class QuizGameMenu(tk.Tk):
         style.configure("TButton", font=(
             "calibri", 10, "bold"), foreground="black", background="white")
 
-        #  self.configure(background="#D7F6FF")
-
         # LOGO
-        logo = tk.Label(self, text="Simone's Quiz Game",
+        logo = tk.Label(self, text=self.game_title,
                         font=("Arial, 18"))
         logo.pack(pady=10, anchor="n", fill="both", expand=1)
 
@@ -94,7 +94,7 @@ class QuizGameMenu(tk.Tk):
         csv_entry.grid(row=0, column=1)
 
         btn_csv_upload = ttk.Button(
-            frame_top, text="upload", style="W.TButton", command=self.browse_files)
+            frame_top, text="browse", style="W.TButton", command=self.browse_files)
         btn_csv_upload.grid(row=0, column=2)
 
         # FRAME FOR BUTTONS
