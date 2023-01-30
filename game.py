@@ -5,6 +5,48 @@ import tkinter.ttk as ttk
 from tkinter import messagebox
 
 
+class MessageBox(tk.Toplevel):
+    def __init__(self, correct, answer, possible_answers):
+        super().__init__()
+
+        self.focus_set()
+
+        # Set window title
+        if correct:
+            self.title("Nice!")
+            self.message = f"{answer} is correct!"
+        else:
+            self.title("Not quite...")
+            self.correct_answers = "\n  ".join(possible_answers)
+            self.message = f"Sorry, {answer} is incorrect.\n\nPossible choices were:\n  {self.correct_answers}"
+
+        # Set window size and placement
+        width, height = 300, 200
+        screen_width, screen_height = self.winfo_screenwidth(), self.winfo_screenheight()
+        win_x, win_y = ((screen_width / 2) - width / 2
+                        ), ((screen_height / 2) - height / 2)
+        self.geometry("%dx%d+%d+%d" % (width, height, win_x, win_y))
+        self.resizable(0, 0)
+
+        self.bind("<Return>", self.exit_window)
+
+        self.place_widgets()
+        self.mainloop()
+
+    def exit_window(self, event):
+        self.destroy()
+        self.quit()
+
+    def place_widgets(self):
+        label_message = tk.Label(
+            self, text=self.message, justify="left", font="calibri, 12")
+        label_message.pack(anchor="center")
+
+        btn_okay = tk.Button(self, text="Okay", width=20, takefocus=1,
+                             command=lambda: self.exit_window(event=None), anchor="s", padx=10, justify="center")
+        btn_okay.pack(pady=20)
+
+
 class QuizGame(tk.Tk):
     def __init__(self, csv_file):
         super().__init__()
@@ -73,26 +115,33 @@ class QuizGame(tk.Tk):
 # Check for the correct answer
     def check_answer(self):
         if self.user_answer.get().lower() in self.correct_answers:
-            messagebox.showinfo(
-                "Nice!", f"{self.user_answer.get()} is the correct answer :)")
+            # messagebox.showinfo(
+            #    "Nice!", f"{self.user_answer.get()} is the correct answer :)")
+
+            MessageBox(True, self.user_answer.get(), self.correct_answers)
             self.questions_correct += 1
         else:
             # Wrong answer condition
-            pass
+            MessageBox(False, self.user_answer.get(), self.correct_answers)
 
 # Update the question + answer entry labels
     def update_widgets(self):
         self.label_question.config(text=self.question_text)
         self.user_answer.set("")
         self.entry_answer.config(textvariable=self.user_answer)
+        self.entry_answer.focus()
 
 # Tasks to perform upon submitting the answer
     def submit_question(self, event):
         self.check_answer()
+        self.focus_set()
         self.get_question()
         self.update_widgets()
 
+
 # Set up and place widgets in the application window
+
+
     def place_widgets(self):
         # STYLING
         style = ttk.Style()
@@ -114,15 +163,14 @@ class QuizGame(tk.Tk):
             frame, textvariable=self.user_answer, font="Arial, 12", width=32)
         label_answer.grid(row=0, column=0)
         self.entry_answer.grid(row=0, column=1, padx=10, pady=20)
+        self.entry_answer.focus()
 
         # SUBMIT BUTTON
-        btn_submit = ttk.Button(frame, text="Submit", style="TButton", takefocus=1,
-                                command=lambda: self.submit_question(event=None))
-        btn_submit.grid(row=1, columnspan=3)
+        self.btn_submit = ttk.Button(frame, text="Submit", style="TButton", state=tk.NORMAL,
+                                     command=lambda: self.submit_question(event=None))
+        self.btn_submit.grid(row=1, columnspan=3)
 
 
-"""
 # used for testing purposes
 if __name__ == "__main__":
     t = QuizGame("questions.csv")
-"""
