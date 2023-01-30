@@ -30,13 +30,12 @@ class QuizGameMenu(tk.Tk):
         self.csv_path.set(pathlib.Path("questions.csv"))
 
         # Set up and display window
-
         self.place_widgets()
         self.mainloop()
 
     def browse_files(self):
         self.filename = filedialog.askopenfilename(
-            initialdir=__file__, title="Select CSV File", filetypes=(("Comma-separated values", "*.csv*"), ("All files", "*.*")))
+            initialdir=__file__, title="Select questions file", filetypes=(("Comma-separated values", "*.csv*"), ("All files", "*.*")))
         self.csv_path.set(self.filename)
 
     def verify_input(self):
@@ -71,9 +70,8 @@ class QuizGameMenu(tk.Tk):
             QuizGame(self.csv_path.get())
 
     def place_widgets(self):
-        # CONFIGURE TTK STYLING
+        # configure Ttk styling
         style = ttk.Style()
-
         style.configure("TButton", font=(
             "calibri", 10, "bold"), foreground="black", background="white")
 
@@ -82,36 +80,37 @@ class QuizGameMenu(tk.Tk):
                         font=("Arial, 18"))
         logo.pack(pady=10, anchor="n", fill="both", expand=1)
 
+        # --- TOP FRAME --- 
         frame_top = tk.Frame(self)
         frame_top.pack(expand=True, anchor="n")
 
-        # SELECT CSV FILE
+        # select csv file
         label_csv = tk.Label(frame_top, text="CSV file: ",
                              font=("Arial, 10"))
         label_csv.grid(row=0, column=0)
 
-        csv_entry = tk.Entry(frame_top, width=30, textvariable=self.csv_path)
-        csv_entry.grid(row=0, column=1)
+        entry_csv = tk.Entry(frame_top, width=30, textvariable=self.csv_path)
+        entry_csv.grid(row=0, column=1)
 
-        btn_csv_upload = ttk.Button(
+        btn_browse = ttk.Button(
             frame_top, text="browse", style="W.TButton", command=self.browse_files)
-        btn_csv_upload.grid(row=0, column=2)
+        btn_browse.grid(row=0, column=2)
 
-        # FRAME FOR BUTTONS
+        # --- BOTTOM FRAME --- 
         frame_bottom = tk.Frame(self)
         frame_bottom.pack(expand=True, anchor="n")
 
-        # START QUIZ
+        # start button
         btn_start = ttk.Button(
             frame_bottom, text="Start Quiz", width=25, command=lambda: self.verify_input())
         btn_start.grid(row=1, columnspan=3)
 
-        # ABOUT PROGRAM
+        # about program button
         btn_about = ttk.Button(
             frame_bottom, text="About program", width=25, command=lambda: print("about quiz"))
         btn_about.grid(row=2, columnspan=3)
 
-        # EXIT
+        # exit button
         btn_exit = ttk.Button(frame_bottom, text="Exit", width=25,
                               command=self.destroy)
         btn_exit.grid(row=3, columnspan=3)
