@@ -27,15 +27,11 @@ If you are on Linux, you will have to install the tkinter module for Python as w
 Ensure that it is working by running `python -m tkinter`
 
 # Recent Changes:
-- added custom dialog box for right/wrong answers (very basic)
-- added Enter button functionality
-- optimized some functions in game.py
-- renamed main menu file to `start_game.py`
+- **added game modes for endless or shuffled quiz**
+- added popup dialog box to show correct answers at the end
+- fixed some window alignment issues
 
 ## Things to fix/add:
-- Sequential mode or endless random question mode
-    - sequential mode would still shuffle questions before
-    - endless mode would randomly select questions until user exits
 - About program button has no function
-- No exit quiz button (must use window close)
-- Num. of correct answers not displayed at the end
+- add an exit quiz button
+- make things look prettier
