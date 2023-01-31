@@ -3,13 +3,13 @@ import tkinter.ttk as ttk
 import pathlib
 import csv
 from tkinter import StringVar
-from tkinter import IntVar
 from tkinter import filedialog
 from tkinter import messagebox
 from game import QuizGame
 
 
 class QuizGameMenu(tk.Tk):
+
     def __init__(self):
         super().__init__()
 
@@ -34,39 +34,48 @@ class QuizGameMenu(tk.Tk):
         self.place_widgets()
         self.mainloop()
 
+    # Open file browser dialog
     def browse_files(self):
         self.filename = filedialog.askopenfilename(
             initialdir=__file__, title="Select questions file", filetypes=(("Comma-separated values", "*.csv*"), ("All files", "*.*")))
         self.csv_path.set(self.filename)
 
-    def verify_input(self):
+    # Verify that CSV file is valid
+    def valid_input(self):
         valid_input = False
 
         if self.csv_path.get().endswith(".csv"):
             try:
                 with open(self.csv_path.get(), "r") as file:
                     c = csv.reader(file)
+
                     for row in c:
-                        try:
-                            if row == [] or row[1] == "":
-                                messagebox.showerror("Error!",
-                                                     "Your CSV file has empty lines.\n\nPlease try again.")
-                                break
-                            else:
-                                valid_input = True
-                        except IndexError:
-                            messagebox.showerror("Error!",
-                                                 "Your .csv file is not formatted properly.\n\nPlease try again.")
+                        if row[-1] == "":
+                            messagebox.showerror(
+                                "Error!", "Your CSV file is not formatted properly.\n\nDo you have any extra commas at the end of your lines?")
                             break
+                        for value in row:
+                            if value == "":
+                                messagebox.showerror("Error!",
+                                                     "Your CSV file has empty values.\n\nPlease try again.")
+                                break
+
+                    valid_input = True
 
             except UnicodeDecodeError:
                 messagebox.showerror(
                     "Error!", "Invalid file type. Please try again.")
+            except IndexError:
+                messagebox.showerror(
+                    "Error!", "Your CSV file has empty lines or is not formatted properly.")
         else:
             messagebox.showerror(
                 "Error!", "You must select a file with a .csv extension")
 
-        if valid_input:
+        return valid_input
+
+    def start_game(self):
+        if self.valid_input() == True:
             self.destroy()
             QuizGame(self.csv_path.get(), self.game_type.get())
 
@@ -103,7 +112,7 @@ class QuizGameMenu(tk.Tk):
 
         # start button
         btn_start = ttk.Button(
-            frame_left_bottom, text="Start Quiz", width=25, command=lambda: self.verify_input())
+            frame_left_bottom, text="Start Quiz", width=25, command=lambda: self.start_game())
         btn_start.grid(row=1, columnspan=3)
 
         # about program button
