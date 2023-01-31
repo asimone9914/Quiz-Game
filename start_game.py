@@ -84,11 +84,13 @@ class QuizGameMenu(tk.Tk):
 
         return valid_input
 
+    # Start the game
     def start_game(self):
         if self.valid_input() == True:
             self.destroy()
             QuizGame(self.csv_path.get(), self.game_type.get())
 
+    # Set up window and widgets
     def place_widgets(self):
         # configure Ttk styling
         style = ttk.Style()
@@ -97,10 +99,10 @@ class QuizGameMenu(tk.Tk):
 
         # LOGO
         logo = tk.Label(self, text=self.game_title,
-                        font=("Arial, 18"))
-        logo.pack(pady=10, anchor="n", fill="both", expand=1)
+                        font=("Calibri, 18"))
+        logo.pack(pady=10, anchor="n", fill="both", expand=True)
 
-        # --- TOP FRAME ---
+        # --- TOP FRAME --- #
         frame_top = tk.Frame(self)
         frame_top.pack(expand=True, anchor="n")
 
@@ -116,43 +118,43 @@ class QuizGameMenu(tk.Tk):
             frame_top, text="browse", style="W.TButton", command=self.browse_files)
         btn_browse.grid(row=0, column=2)
 
-        # --- BOTTOM LEFT FRAME ---
-        frame_left_bottom = tk.Frame(self)
-        frame_left_bottom.pack(expand=True)
+        # --- MIDDLE FRAME BUTTONS --- #
+        frame_middle = tk.Frame(self)
+        frame_middle.pack(expand=True)
 
         # start button
         btn_start = ttk.Button(
-            frame_left_bottom, text="Start Quiz", width=25, command=lambda: self.start_game())
+            frame_middle, text="Start Quiz", width=25, command=lambda: self.start_game())
         btn_start.grid(row=1, columnspan=3)
 
         # about program button
         btn_about = ttk.Button(
-            frame_left_bottom, text="About program", width=25, command=lambda: print("about quiz"))
+            frame_middle, text="About program", width=25, command=lambda: print("about quiz"))
         btn_about.grid(row=2, columnspan=3)
 
         # exit button
-        btn_exit = ttk.Button(frame_left_bottom, text="Exit", width=25,
+        btn_exit = ttk.Button(frame_middle, text="Exit", width=25,
                               command=self.destroy)
         btn_exit.grid(row=3, columnspan=3)
 
-        # --- BOTTOM RIGHT FRAME ---
-        frame_right_bottom = tk.Frame(self)
-        frame_right_bottom.pack(expand=True)
+        # --- BOTTOM FRAME RADIO BUTTONS --- #
+        frame_bottom = tk.Frame(self)
+        frame_bottom.pack(expand=True)
 
         # quiz type selection
         self.game_type = StringVar()
         self.game_type.set("shuffle")
 
         label_quiz_type = tk.Label(
-            frame_right_bottom, text="Quiz type", font=("Calibri", 12, "underline"))
+            frame_bottom, text="Quiz type", font=("Calibri", 12, "underline"))
         label_quiz_type.grid(columnspan=3)
 
         btn_shuffle_quiz = tk.Radiobutton(
-            frame_right_bottom, text="Shuffle Questions", variable=self.game_type, value="shuffle")
+            frame_bottom, text="Shuffle Questions", variable=self.game_type, value="shuffle")
         btn_shuffle_quiz.grid(row=1, column=0)
 
         btn_endless_quiz = tk.Radiobutton(
-            frame_right_bottom, text="Endless Quiz", variable=self.game_type, value="endless")
+            frame_bottom, text="Endless Quiz", variable=self.game_type, value="endless")
         btn_endless_quiz.grid(row=1, column=1)
 
 
