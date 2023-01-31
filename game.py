@@ -65,9 +65,12 @@ class QuizGame(tk.Tk):
 
         # Game data variables
         self.questions_file = csv_file
-        self.user_answer = tk.StringVar()
         self.game_mode = quiz_type
-        print(self.game_mode)
+        self.user_answer = tk.StringVar()
+
+        print(f"\n\nQuiz Game started")
+        print(f"Using CSV file: {self.questions_file}")
+        print(f"Selected game mode: {self.game_mode}")
 
         # Keep track of questions and correct answers
         self.question_index = 0
@@ -75,16 +78,18 @@ class QuizGame(tk.Tk):
         # Used for displaying questions
         self.question_label = 1
 
-        # Allow Enter key to submit answer
-        self.bind("<Return>", self.submit_question)
+        self.running = True
+        if self.running:
+            # Allow Enter key to submit answer
+            self.bind("<Return>", self.submit_question)
 
-        # Build dictionary of questions/answers from CSV file
-        self.build_dict()
-        self.get_question()
+            # Build dictionary of questions/answers from CSV file
+            self.build_dict()
+            self.get_question()
 
-        # Set up and display window
-        self.place_widgets()
-        self.mainloop()
+            # Set up and display window
+            self.place_widgets()
+            self.mainloop()
 
 # Build a dictionary of questions/answers from the CSV file and create a list to index questions
     def build_dict(self):
@@ -108,7 +113,7 @@ class QuizGame(tk.Tk):
         if self.game_mode == "shuffle":
             random.shuffle(self.question_list)
 
-# Fetch a random question from the question list and update correct answers
+# Fetch a question from the list and update correct answers
     def get_question(self):
 
         # check quiz type
@@ -120,8 +125,7 @@ class QuizGame(tk.Tk):
             if self.question_index < len(self.question_list):
                 self.question = self.question_list[self.question_index]
             else:
-                messagebox.showinfo(
-                    "Finished", f"You got {self.questions_correct} out of {self.question_index} questions correct!")
+                self.end_game()
 
         # display the question
         self.question_text = f"Question {self.question_label}: \n{self.question}"
@@ -135,22 +139,22 @@ class QuizGame(tk.Tk):
 
 # Check for the correct answer
     def check_answer(self):
+        # Correct answer condition
         if self.user_answer.get().lower() in self.correct_answers:
-            # messagebox.showinfo(
-            #    "Nice!", f"{self.user_answer.get()} is the correct answer :)")
-
             MessageBox(True, self.user_answer.get(), self.correct_answers)
             self.questions_correct += 1
+
+        # Wrong answer condition
         else:
-            # Wrong answer condition
             MessageBox(False, self.user_answer.get(), self.correct_answers)
 
 # Update the question + answer entry labels
     def update_widgets(self):
-        self.label_question.config(text=self.question_text)
-        self.user_answer.set("")
-        self.entry_answer.config(textvariable=self.user_answer)
-        self.entry_answer.focus()
+        if self.running:
+            self.label_question.config(text=self.question_text)
+            self.user_answer.set("")
+            self.entry_answer.config(textvariable=self.user_answer)
+            self.entry_answer.focus()
 
 # Tasks to perform upon submitting the answer
     def submit_question(self, event):
@@ -190,9 +194,14 @@ class QuizGame(tk.Tk):
 
 # Called when 'X' button in window manager is pressed
     def end_game(self):
+        self.running = False
+
+        if self.game_mode == "endless":
+            self.question_index -= 1
+
         # display num. of correct answers, will add yes/no dialog in the future
         messagebox.showinfo(
-            "Finished", f"You got {self.questions_correct} out of {self.question_index - 1} questions correct!")
+            "Finished", f"You got {self.questions_correct} out of {self.question_index} questions correct!")
 
         # close the application
         self.destroy()
