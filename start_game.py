@@ -42,7 +42,7 @@ class QuizGameMenu(tk.Tk):
 
     # Verify that CSV file is valid
     def valid_input(self):
-        valid_input = False
+        valid_input = True
 
         if self.csv_path.get().endswith(".csv"):
             try:
@@ -53,24 +53,34 @@ class QuizGameMenu(tk.Tk):
                         if row[-1] == "":
                             messagebox.showerror(
                                 "Error!", "Your CSV file is not formatted properly.\n\nDo you have any extra commas at the end of your lines?")
+                            valid_input = False
                             break
+
+                        if len(row) < 2:
+                            messagebox.showerror(
+                                "Error!", "Your CSV file is not formatted properly.\n\nEach row must have at least two values.")
+                            valid_input = False
+                            break
+
                         for value in row:
-                            if value == "":
+                            if value == "" or value.isspace():
                                 messagebox.showerror("Error!",
                                                      "Your CSV file has empty values.\n\nPlease try again.")
+                                valid_input = False
                                 break
-
-                    valid_input = True
 
             except UnicodeDecodeError:
                 messagebox.showerror(
                     "Error!", "Invalid file type. Please try again.")
+                valid_input = False
             except IndexError:
                 messagebox.showerror(
                     "Error!", "Your CSV file has empty lines or is not formatted properly.")
+                valid_input = False
         else:
             messagebox.showerror(
                 "Error!", "You must select a file with a .csv extension")
+            valid_input = False
 
         return valid_input
 
