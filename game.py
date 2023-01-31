@@ -40,7 +40,7 @@ class MessageBox(tk.Toplevel):
     def place_widgets(self):
         label_message = tk.Label(
             self, text=self.message, justify="left", font="calibri, 12")
-        label_message.pack(anchor="center")
+        label_message.pack(anchor="center", expand=True)
 
         btn_okay = tk.Button(self, text="Okay", width=20, takefocus=1,
                              command=lambda: self.exit_window(event=None), anchor="s", padx=10, justify="center")
@@ -48,12 +48,12 @@ class MessageBox(tk.Toplevel):
 
 
 class QuizGame(tk.Tk):
-    def __init__(self, csv_file):
+    def __init__(self, csv_file, quiz_type):
         super().__init__()
 
         # Window properties
         self.title("Quiz Game")
-        self.protocol("WM_DELETE_WINDOW", self.destroy)
+        self.protocol("WM_DELETE_WINDOW", self.end_game)
 
         # Window size and placement
         width, height = 640, 250
@@ -66,10 +66,14 @@ class QuizGame(tk.Tk):
         # Game data variables
         self.questions_file = csv_file
         self.user_answer = tk.StringVar()
+        self.game_mode = quiz_type
+        print(self.game_mode)
 
         # Keep track of questions and correct answers
-        self.question_num = 0
+        self.question_index = 0
         self.questions_correct = 0
+        # Used for displaying questions
+        self.question_label = 1
 
         # Allow Enter key to submit answer
         self.bind("<Return>", self.submit_question)
@@ -82,6 +86,7 @@ class QuizGame(tk.Tk):
         self.place_widgets()
         self.mainloop()
 
+# Build a dictionary of questions/answers from the CSV file and create a list to index questions
     def build_dict(self):
         self.questions_dict = {}
 
@@ -99,18 +104,34 @@ class QuizGame(tk.Tk):
         self.question_list = []
         [self.question_list.append(i) for i in self.questions_dict.keys()]
 
+        # Shuffle the list if shuffle game mode
+        if self.game_mode == "shuffle":
+            random.shuffle(self.question_list)
+
 # Fetch a random question from the question list and update correct answers
     def get_question(self):
-        self.question_num += 1
 
-        self.question = self.question_list[(
-            random.randint(0, len(self.question_list) - 1))]
+        # check quiz type
+        if self.game_mode == "endless":
+            self.question = self.question_list[(
+                random.randint(0, len(self.question_list) - 1))]
 
-        self.question_text = f"Question {self.question_num}: \n{self.question}"
+        if self.game_mode == "shuffle":
+            if self.question_index < len(self.question_list):
+                self.question = self.question_list[self.question_index]
+            else:
+                messagebox.showinfo(
+                    "Finished", f"You got {self.questions_correct} out of {self.question_index} questions correct!")
 
+        # display the question
+        self.question_text = f"Question {self.question_label}: \n{self.question}"
+        self.question_index += 1
+        self.question_label += 1
+
+        # populate list of correct answers
         self.correct_answers = []
         [self.correct_answers.append(i.lower().strip())
-         for i in self.questions_dict.get(self.question)]
+            for i in self.questions_dict.get(self.question)]
 
 # Check for the correct answer
     def check_answer(self):
@@ -138,10 +159,7 @@ class QuizGame(tk.Tk):
         self.get_question()
         self.update_widgets()
 
-
 # Set up and place widgets in the application window
-
-
     def place_widgets(self):
         # STYLING
         style = ttk.Style()
@@ -170,7 +188,16 @@ class QuizGame(tk.Tk):
                                      command=lambda: self.submit_question(event=None))
         self.btn_submit.grid(row=1, columnspan=3)
 
+# Called when 'X' button in window manager is pressed
+    def end_game(self):
+        # display num. of correct answers, will add yes/no dialog in the future
+        messagebox.showinfo(
+            "Finished", f"You got {self.questions_correct} out of {self.question_index - 1} questions correct!")
+
+        # close the application
+        self.destroy()
+
 
 # used for testing purposes
 if __name__ == "__main__":
-    t = QuizGame("questions.csv")
+    t = QuizGame("questions.csv", "shuffle")
