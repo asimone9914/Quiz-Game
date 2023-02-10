@@ -1,7 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-import pathlib
-import csv
+from pathlib import Path
+from csv import reader
 from tkinter import StringVar
 from tkinter import filedialog
 from tkinter import messagebox
@@ -28,7 +28,7 @@ class QuizGameMenu(tk.Tk):
 
         # Set location of csv file
         self.csv_path = StringVar()
-        self.csv_path.set(pathlib.Path("questions.csv"))
+        self.csv_path.set(Path("questions.csv"))
 
         # Set up and display window
         self.place_widgets()
@@ -47,7 +47,7 @@ class QuizGameMenu(tk.Tk):
         if self.csv_path.get().endswith(".csv"):
             try:
                 with open(self.csv_path.get(), "r") as file:
-                    c = csv.reader(file)
+                    c = reader(file)
 
                     for row in c:
                         if row[-1] == "":

@@ -1,9 +1,8 @@
-import csv
-import random
+from csv import reader
+from random import shuffle, randint
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import messagebox
-from re import sub
 
 
 class MessageBox(tk.Toplevel):
@@ -99,7 +98,7 @@ class QuizGame(tk.Tk):
         # Read from the CSV file (more robust error checking takes place in menu.py)
         try:
             with open(self.questions_file, "r") as csv_file:
-                c = csv.reader(csv_file)
+                c = reader(csv_file)
                 for row in c:
                     self.questions_dict.update({row[0]: row[1::]})
         except FileNotFoundError:
@@ -112,7 +111,7 @@ class QuizGame(tk.Tk):
 
         # Shuffle the list if shuffle game mode
         if self.game_mode == "shuffle":
-            random.shuffle(self.question_list)
+            shuffle(self.question_list)
 
 # Fetch a question from the list and update correct answers
     def get_question(self):
@@ -120,7 +119,7 @@ class QuizGame(tk.Tk):
         # check quiz type
         if self.game_mode == "endless":
             self.question = self.question_list[(
-                random.randint(0, len(self.question_list) - 1))]
+                randint(0, len(self.question_list) - 1))]
 
         if self.game_mode == "shuffle":
             if self.question_index < len(self.question_list):
