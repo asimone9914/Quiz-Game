@@ -27,12 +27,11 @@ If you are on Linux, you will have to install the tkinter module for Python as w
 Ensure that it is working by running `python -m tkinter`
 
 # Recent Changes:
-- **added game modes for endless or shuffled quiz**
-- added popup dialog box to show correct answers at the end
-- fixed some window alignment issues
+- very basic question sizing for when question is too long (needs tweaking)
+- added input sanitation
+- slight UI redesign
 
 ## Things to fix/add:
 - [x] Fix longer questions going out of the window
 - [ ] add an About Program section
 - [ ] add an exit quiz button
-- [ ] make things look prettier
