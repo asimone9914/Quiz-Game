@@ -3,6 +3,7 @@ import random
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import messagebox
+from re import sub
 
 
 class MessageBox(tk.Toplevel):
@@ -56,11 +57,11 @@ class QuizGame(tk.Tk):
         self.protocol("WM_DELETE_WINDOW", self.end_game)
 
         # Window size and placement
-        width, height = 640, 250
+        self.width, self.height = 640, 250
         screen_width, screen_height = self.winfo_screenwidth(), self.winfo_screenheight()
-        win_x, win_y = ((screen_width / 2) - width / 2
-                        ), ((screen_height / 2) - height / 2)
-        self.geometry("%dx%d+%d+%d" % (width, height, win_x, win_y))
+        win_x, win_y = ((screen_width / 2) - self.width / 2
+                        ), ((screen_height / 2) - self.height / 2)
+        self.geometry("%dx%d+%d+%d" % (self.width, self.height, win_x, win_y))
         self.resizable(0, 0)
 
         # Game data variables
@@ -75,8 +76,8 @@ class QuizGame(tk.Tk):
         # Keep track of questions and correct answers
         self.question_index = 0
         self.questions_correct = 0
-        # Used for displaying questions
-        self.question_label = 1
+        # Used for displaying question number
+        self.question_number = 1
 
         self.running = True
         if self.running:
@@ -124,13 +125,9 @@ class QuizGame(tk.Tk):
         if self.game_mode == "shuffle":
             if self.question_index < len(self.question_list):
                 self.question = self.question_list[self.question_index]
+                self.question_index += 1
             else:
                 self.end_game()
-
-        # display the question
-        self.question_text = f"Question {self.question_label}: \n{self.question}"
-        self.question_index += 1
-        self.question_label += 1
 
         # populate list of correct answers
         self.correct_answers = []
@@ -139,24 +136,51 @@ class QuizGame(tk.Tk):
 
 # Check for the correct answer
     def check_answer(self):
+        self.question_number += 1
+
+        # sanitize input
+        bad_chars = [",", "-", "/"]
+        submitted_answer = self.user_answer.get().strip()
+        for x in bad_chars:
+            submitted_answer = submitted_answer.replace(x, "")
+
         # Correct answer condition
-        if self.user_answer.get().lower() in self.correct_answers:
-            MessageBox(True, self.user_answer.get(), self.correct_answers)
+        if submitted_answer.lower() in self.correct_answers:
+            MessageBox(True, submitted_answer, self.correct_answers)
             self.questions_correct += 1
 
         # Wrong answer condition
         else:
-            MessageBox(False, self.user_answer.get(), self.correct_answers)
+            MessageBox(False, submitted_answer, self.correct_answers)
 
 # Update the question + answer entry labels
     def update_widgets(self):
         if self.running:
-            self.label_question.config(text=self.question_text)
+            self.label_number.config(text=f"Question {self.question_number}")
+            self.label_question.config(text=self.question)
+            self.update()
+            self.size_question()
+
             self.user_answer.set("")
             self.entry_answer.config(textvariable=self.user_answer)
             self.entry_answer.focus()
 
-# Tasks to perform upon submitting the answer
+# rudimentary function to adjust question if it goes off screen
+    def size_question(self):
+        # print(
+        #    f"\nQuestion label width: {self.label_question.winfo_width()} pixels")
+
+        question_words = self.question.split()
+        question_wc = len(question_words)
+
+        mid = (question_wc // 2)
+
+        if self.label_question.winfo_width() > (self.width - 32):
+            question_words[mid] = (question_words[mid] + "\n")
+            self.question = " ".join(question_words)
+            self.label_question.configure(text=self.question)
+
+    # Tasks to perform upon submitting the answer
     def submit_question(self, event):
         self.check_answer()
         self.focus_set()
@@ -170,14 +194,17 @@ class QuizGame(tk.Tk):
         style.configure("TButton", font=(
             "calibri", 15), foreground="black", background="white")
 
+        # QUESTION NUMBER
+        self.label_number = tk.Label(self, font="Arial, 12")
+        self.label_number.pack(anchor="nw", padx=4)
+
         # QUESTION TEXT
-        self.label_question = tk.Label(self,
-                                       text=self.question_text, font="Arial, 15")
-        self.label_question.pack(pady=25, anchor="n")
+        self.label_question = tk.Label(self, font="Arial, 15")
+        self.label_question.pack(anchor="n", pady=8)
 
         # separate frame for buttons, text entry
         frame = tk.Frame(self)
-        frame.pack(expand=True, anchor="n")
+        frame.pack(expand=True, anchor="s", pady=20)
 
         # ANSWER ENTRY BOX
         label_answer = tk.Label(frame, text="Answer: ", font="Arial, 10")
@@ -192,16 +219,17 @@ class QuizGame(tk.Tk):
                                      command=lambda: self.submit_question(event=None))
         self.btn_submit.grid(row=1, columnspan=3)
 
+        self.update_widgets()
+
 # Called when 'X' button in window manager is pressed
     def end_game(self):
         self.running = False
 
-        if self.game_mode == "endless":
-            self.question_index -= 1
+        self.question_number -= 1
 
         # display num. of correct answers, will add yes/no dialog in the future
         messagebox.showinfo(
-            "Finished", f"You got {self.questions_correct} out of {self.question_index} questions correct!")
+            "Finished", f"You got {self.questions_correct} out of {self.question_number} questions correct!")
 
         # close the application
         self.destroy()
