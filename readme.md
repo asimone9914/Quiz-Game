@@ -32,7 +32,7 @@ Ensure that it is working by running `python -m tkinter`
 - fixed some window alignment issues
 
 ## Things to fix/add:
-- [ ] Fix longer questions going out of the window
+- [x] Fix longer questions going out of the window
 - [ ] add an About Program section
 - [ ] add an exit quiz button
 - [ ] make things look prettier
