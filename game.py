@@ -137,12 +137,23 @@ class QuizGame(tk.Tk):
     def check_answer(self):
         self.question_number += 1
 
+        submitted_answer = self.user_answer.get().strip().lower()
+        
         # sanitize input
-        bad_chars = [",", "-", "/"]
-        submitted_answer = self.user_answer.get().strip()
-        for x in bad_chars:
-            submitted_answer = submitted_answer.replace(x, "")
+        def sanitize(answer):
+            bad_chars = [",", "-", "/"]
+            for x in bad_chars:
+                if x == "-"
+                    answer = answer.replace(x, " ")
+                else:
+                    answer = answer.replace(x, "")
+            return answer
 
+        for i in range(len(self.correct_answers)):
+            self.correct_answers[i] = sanitize(self.correct_answers[i])
+        
+        submitted_answer = sanitize(submitted_answer)
+        
         # Correct answer condition
         if submitted_answer.lower() in self.correct_answers:
             MessageBox(True, submitted_answer, self.correct_answers)
