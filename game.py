@@ -140,18 +140,20 @@ class QuizGame(tk.Tk):
 
 # Check for the correct answer
     def check_answer(self):
-        self.question_number += 1
-        submitted_answer = self.user_answer.get().strip().lower()
 
         # function for input sanitization
         def sanitize(answer):
             bad_chars = [",", "-", "/"]
             for x in bad_chars:
-                if x == "-":
-                    answer = answer.replace(x, " ")
-                else:
-                    answer = answer.replace(x, "")
+                answer = answer.replace(x, "")
+
             return answer
+
+        # increment the question counter
+        self.question_number += 1
+
+        # strip leading spaces and change case of submitted answer
+        submitted_answer = self.user_answer.get().strip().lower()
 
         # sanitize the correct answers list
         for i in range(len(self.correct_answers)):
