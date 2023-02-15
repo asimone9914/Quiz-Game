@@ -68,13 +68,14 @@ class QuizGame(tk.Tk):
         self.game_mode = quiz_type
         self.user_answer = tk.StringVar()
 
-        print(f"\n\nQuiz Game started")
+        print(f"\n\n[ QUIZ GAME STARTED ]")
         print(f"Using CSV file: {self.questions_file}")
         print(f"Selected game mode: {self.game_mode}")
 
         # Keep track of questions and correct answers
         self.question_index = 0
         self.questions_correct = 0
+
         # Used for displaying question number
         self.question_number = 1
 
@@ -109,37 +110,40 @@ class QuizGame(tk.Tk):
         self.question_list = []
         [self.question_list.append(i) for i in self.questions_dict.keys()]
 
+        # Total number of questions;  used with shuffle game mode
+        self.total_num_questions = len(self.question_list)
+
         # Shuffle the list if shuffle game mode
         if self.game_mode == "shuffle":
             shuffle(self.question_list)
 
 # Fetch a question from the list and update correct answers
     def get_question(self):
+        if not self.question_index == self.total_num_questions:
 
-        # check quiz type
-        if self.game_mode == "endless":
-            self.question = self.question_list[(
-                randint(0, len(self.question_list) - 1))]
+            # get random question if endless game mode
+            if self.game_mode == "endless":
+                self.question = self.question_list[(
+                    randint(0, len(self.question_list) - 1))]
 
-        if self.game_mode == "shuffle":
-            if self.question_index < len(self.question_list):
+            # iterate through the list if shuffle game mode
+            if self.game_mode == "shuffle":
                 self.question = self.question_list[self.question_index]
                 self.question_index += 1
-            else:
-                self.end_game()
 
-        # populate list of correct answers
-        self.correct_answers = []
-        [self.correct_answers.append(i.lower().strip())
-            for i in self.questions_dict.get(self.question)]
+            # populate list of correct answers
+            self.correct_answers = []
+            [self.correct_answers.append(i.lower().strip())
+                for i in self.questions_dict.get(self.question)]
+        else:
+            self.end_game()
 
 # Check for the correct answer
     def check_answer(self):
         self.question_number += 1
-
         submitted_answer = self.user_answer.get().strip().lower()
-        
-        # sanitize input
+
+        # function for input sanitization
         def sanitize(answer):
             bad_chars = [",", "-", "/"]
             for x in bad_chars:
@@ -149,19 +153,21 @@ class QuizGame(tk.Tk):
                     answer = answer.replace(x, "")
             return answer
 
+        # sanitize the correct answers list
         for i in range(len(self.correct_answers)):
             self.correct_answers[i] = sanitize(self.correct_answers[i])
-        
+
+        # sanitize the user submitted answer
         submitted_answer = sanitize(submitted_answer)
-        
+
         # Correct answer condition
         if submitted_answer.lower() in self.correct_answers:
-            MessageBox(True, submitted_answer, self.correct_answers)
+            MessageBox(True, self.user_answer.get(), self.correct_answers)
             self.questions_correct += 1
 
         # Wrong answer condition
         else:
-            MessageBox(False, submitted_answer, self.correct_answers)
+            MessageBox(False, self.user_answer.get(), self.correct_answers)
 
 # Update the question + answer entry labels
     def update_widgets(self):
