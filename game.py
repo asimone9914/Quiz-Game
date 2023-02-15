@@ -143,7 +143,7 @@ class QuizGame(tk.Tk):
         def sanitize(answer):
             bad_chars = [",", "-", "/"]
             for x in bad_chars:
-                if x == "-"
+                if x == "-":
                     answer = answer.replace(x, " ")
                 else:
                     answer = answer.replace(x, "")
