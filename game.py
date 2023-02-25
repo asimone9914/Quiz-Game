@@ -47,6 +47,57 @@ class MessageBox(tk.Toplevel):
         btn_okay.pack(pady=20)
 
 
+class GameSummary(tk.Tk):
+    def __init__(self, num_correct, num_questions, wrong_answers_list):
+        super().__init__()
+
+        self.protocol("WM_DELETE_WINDOW", self.exit_window)
+
+        self.focus_set()
+        self.wrong_ans = wrong_answers_list
+        self.num_correct = num_correct
+        self.num_questions = num_questions
+
+        # Set window size and placement
+        width, height = 600, 800
+        screen_width, screen_height = self.winfo_screenwidth(), self.winfo_screenheight()
+        win_x, win_y = ((screen_width / 2) - width / 2
+                        ), ((screen_height / 2) - height / 2)
+        self.geometry("%dx%d+%d+%d" % (width, height, win_x, win_y))
+        self.resizable(0, 0)
+
+        self.place_widgets()
+        self.mainloop()
+
+    def exit_window(self):
+        self.destroy()
+        self.quit()
+
+    def place_widgets(self):
+        # Title label
+        self.label_title = tk.Label(
+            self, text="Game Summary", font=("Arial", 15))
+        self.label_title.pack(fill="x", anchor="n", pady=10)
+
+        # Secondary text
+        self.label_secondary = tk.Label(
+            self, text=f"You got {self.num_correct} out of {self.num_questions} correct!\nIncorrect answers are displayed below.")
+        self.label_secondary.pack(fill="x", pady=10)
+
+        # Create list box to display incorrect answers
+        self.lb1 = tk.Listbox(self)
+
+        # Populate listbox with incorrect questions + answers
+        pos = 1
+        for ans in self.wrong_ans:
+            self.lb1.insert(pos, f"Q: {ans[0]}")
+            pos += 1
+            self.lb1.insert(pos, f"  A: {ans[1]}")
+            pos += 1
+
+        self.lb1.pack(expand=True, fill="both")
+
+
 class QuizGame(tk.Tk):
     def __init__(self, csv_file, quiz_type):
         super().__init__()
@@ -68,9 +119,11 @@ class QuizGame(tk.Tk):
         self.game_mode = quiz_type
         self.user_answer = tk.StringVar()
 
-        print(f"\n\n[ QUIZ GAME STARTED ]")
-        print(f"Using CSV file: {self.questions_file}")
-        print(f"Selected game mode: {self.game_mode}")
+        # Lists to keep track of questions/answers
+        self.questions_dict = {}
+        self.question_list = []
+        self.correct_answers = []
+        self.wrong_answers = []
 
         # Keep track of questions and correct answers
         self.question_index = 0
@@ -81,6 +134,10 @@ class QuizGame(tk.Tk):
 
         self.running = True
         if self.running:
+            print(f"\n\n[ QUIZ GAME STARTED ]")
+            print(f"Using CSV file: {self.questions_file}")
+            print(f"Selected game mode: {self.game_mode}")
+
             # Allow Enter key to submit answer
             self.bind("<Return>", self.submit_question)
 
@@ -94,7 +151,6 @@ class QuizGame(tk.Tk):
 
 # Build a dictionary of questions/answers from the CSV file and create a list to index questions
     def build_dict(self):
-        self.questions_dict = {}
 
         # Read from the CSV file (more robust error checking takes place in menu.py)
         try:
@@ -170,6 +226,8 @@ class QuizGame(tk.Tk):
         # Wrong answer condition
         else:
             MessageBox(False, self.user_answer.get(), self.correct_answers)
+            self.wrong_answers.append([self.question, self.correct_answers])
+            print(self.wrong_answers)
 
 # Update the question + answer entry labels
     def update_widgets(self):
@@ -198,7 +256,7 @@ class QuizGame(tk.Tk):
             self.question = " ".join(question_words)
             self.label_question.configure(text=self.question)
 
-    # Tasks to perform upon submitting the answer
+# Tasks to perform upon submitting the answer
     def submit_question(self, event):
         self.check_answer()
         self.focus_set()
@@ -245,12 +303,12 @@ class QuizGame(tk.Tk):
 
         self.question_number -= 1
 
-        # display num. of correct answers, will add yes/no dialog in the future
-        messagebox.showinfo(
-            "Finished", f"You got {self.questions_correct} out of {self.question_number} questions correct!")
-
-        # close the application
+        # close the game window
         self.destroy()
+
+        # Open the game summary window
+        gs = GameSummary(self.questions_correct,
+                         self.question_number, self.wrong_answers)
 
 
 # used for testing purposes
