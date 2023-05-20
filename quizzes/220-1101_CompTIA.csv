@@ -1,0 +1,45 @@
+Which type of display uses electrified organic compound?, OLED, organic light emitting diode
+What is the range of ephemeral port numbers?, 1024-65535, 1024 to 65535
+Which was the first 802.11 standard to introduce MIMO?, 802.11n, 802.11 n, n
+What is the maximum throughput of 802.11g?, 54 Mb/s, 54 Mbps
+What is the maximum throughput of 802.11a?, 54 Mb/s, 54 Mbps
+What is the max speed for USB 2.0?, 480 Mb/s, 480 Mbps
+Which IEEE channels do not overlap?, 1 6 11, 1 6 and 11
+How many devices can a single USB host controller support?, 127
+What is the max speed for USB 3.2 Gen 1?, 5.0 Gbps, 5 Gbps, 5.0 Gb/s, 5 Gb/s
+Which 802.11 standard uses both the 2.4 and 5.0 GHz frequency band?, 802.11n, 802.11 n, n
+What is the first step in the laser printing process?, Processing
+What is the maxmium speed of USB 3.2 Gen 2 (SuperSpeed+)?, 10 Gb/s, 10.0 Gbps, 10 Gb/s, 10 Gbps
+Name a common Layer 2 (Data-Link) layer protocol, Ethernet, DOCSIS, 802.11, LLDP
+What is the data between an Ethernet Header and Trailer called?, payload, the payload
+What is the minimum number of drives required for RAID 10?, 4, four
+What is the maxmium theoretical throughput of 802.11b?, 11 Mbps, 11 Mb/s
+What is the maximum transmission distance for a Class 2 device?, 10 meters, 10m
+What is the max speed USB 1.1 Low Speed can run at?, 1.5 Mb/s, 1.5 Mbps
+What is the maximum range for BlueTooth 2.0?, 30m, 30 meters, 30 m
+What is the maximum distance for SMF?, 100km, 100 km, 100 kilometers
+What is the maxmium throughput of SATA 3.0?, 6.0Gbps, 6.0 Gb/s, 6 Gbps, 6 Gb/s
+Which RAID configuration has only striping and no parity?, RAID 0, 0
+What is the minimum number of disks required for RAID 5?, 3, three
+What is another name for an impact printer?, dot matrix
+The range of non-ephemeral port number is 0 to what?, 1023
+What is the maximum transmission distance for a Class 1 device?, 100 meters, 100m
+What is the maximum distance for MMF?, 2km, 2 km, 2 kilometers
+What is the max speed for BT 3.0 and 4.0 devices using HS mode?, 24 Mbps, 24 Mb/s
+What is the max theoretical throughput of a Thunderbolt v3 cable?, 40 Gb/s, 40 Gbps
+What speed can USB 1.1 High Speed achieve?, 12 Mb/s, 12 Mbps
+What kind of printer uses piezoelectric pressure pads?, InkJet
+What is the bus-width for quad channel RAM?, 256 bits, 256-bit
+How many drives can fail in a RAID 5 array and have it still function?, 1, one
+What device converts fiber optic signals into digital signals?, ONT, Optical Network Terminal
+What does the 802.3af standard refer to?, PoE, Power over Ethernet
+What might you need to do when experiencing color shifts on a laser printer?, calibrate, recalibrate, calibration
+What is the maximum distance for a Cat 5/5e/6a cable?, 100m, 100 meters, 100 m
+What is the maximum distance for a Cat 6 cable?, 55 meters, 55m, 55 m
+What is the maximum throughput of a Cat 5e cable?, 1 Gbps, 1 Gb/s
+Your laser printer is printing pages with vertical lines on them. What component is likely at fault/dirty?, imaging drum, photosensitive drum
+What is the maximum download speed of a 4G LTE network?, 150 Mb/s, 150 Mbps
+What is the maximum throughput of an LTE-A network?, 300 Mb/s, 300 Mbps
+What cloud computing model provides the most control over infrastructure?, IaaS, infrastructure as a service
+What type of cloud service would an application like Dropbox or Netflix be?, SaaS, software as a service
+Which cloud computing model is ideal for developers?, PaaS, platform as a service

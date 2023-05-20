@@ -1,0 +1,26 @@
+What is the port number for SMTP TLS?, 587
+What service belongs to port 427?, SLP, Service Location Protocol
+Which port number is associated with HTTP Secure?, 443
+What is the service associated with port 548?, AFP, Apple Filing Protocol
+What port does FTP use to transmit data?, 20
+What service is associated with port 22?, SSH, SFTP
+What is the service associated with port 23?, Telnet
+The port number for POP3 Secure is what?, 995
+What service is associated with the port number 53?, DNS, Domain Name System
+What is the port number for SMTP?, 25
+What service is associated with the ports 137-139?, NetBIOS
+Which IP protocol does DHCP use? (TCP/UDP), UDP
+What service belongs to ports 67/68?, DHCP, Dynamic Host Configuration Protocol
+Port 993 belongs to which service?, IMAPS, Secure IMAP, IMAP Secure
+What is the port number for SMB/CIFS?, 445
+Port 389 belongs to which service?, LDAP, Lightweight Directory Access Protocol
+What port is used with RDP?, 3389
+What port is for SNMP Traps?, 162
+What port is for SNMP Queries?, 161
+HTTP uses which port?, 80
+What is the port for IMAP?, 143
+What is the default FTP Control port?, 21
+Which port does the MS SQL server use?, 1433
+Port 3306 is associated with what service?, MySQL, My SQL
+Oracle's SQLNet database server uses which port?, 1521
+Ports 5060/5061 are used for which service?, SIP, Session Initiation Protocol
