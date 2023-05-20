@@ -1,5 +1,4 @@
 # Python Quiz Game
-**THIS APPLICATION IS IN A VERY EARLY STAGE OF DEVELOPMENT**
 
 A simple quiz game built with Python, using the Tkinter library for a GUI.
 This application supports custom questions and answers through the use of CSV (comma-separated values) files.
@@ -7,7 +6,7 @@ This application supports custom questions and answers through the use of CSV (c
 The file can be formatted as such:
 ```
   1| question, answer1, answer2, answer3
-  2| Who plays jack in The Shining?, Jack Nicholson
+  2| Who plays Jack in The Shining?, Jack Nicholson
   3| Where is the Empire State Building located?, New York, New York City
 ```
 > You may notice there are spaces in this file. 
