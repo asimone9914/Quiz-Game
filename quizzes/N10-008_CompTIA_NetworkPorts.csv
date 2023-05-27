@@ -24,3 +24,6 @@ Which port does the MS SQL server use?, 1433
 Port 3306 is associated with what service?, MySQL, My SQL
 Oracle's SQLNet database server uses which port?, 1521
 Ports 5060/5061 are used for which service?, SIP, Session Initiation Protocol
+Which UDP port number does Syslog use?, 514
+Port 636 belongs to which service?, LDAPS, LDAP over SSL
+What is the port number for LDAPS?, 636
