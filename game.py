@@ -59,12 +59,12 @@ class GameSummary(tk.Tk):
         self.num_questions = num_questions
 
         # Set window size and placement
-        width, height = 600, 800
+        width, height = 600, 400
         screen_width, screen_height = self.winfo_screenwidth(), self.winfo_screenheight()
         win_x, win_y = ((screen_width / 2) - width / 2
                         ), ((screen_height / 2) - height / 2)
         self.geometry("%dx%d+%d+%d" % (width, height, win_x, win_y))
-        self.resizable(0, 0)
+        self.resizable(True, True)
 
         self.place_widgets()
         self.mainloop()
@@ -84,16 +84,30 @@ class GameSummary(tk.Tk):
             self, text=f"You got {self.num_correct} out of {self.num_questions} correct!\nIncorrect answers are displayed below.")
         self.label_secondary.pack(fill="x", pady=10)
 
-        # Create list box to display incorrect answers
+        # Create a Listbox to display incorrect answers
         self.lb1 = tk.Listbox(self)
+        
+        # Create scrollbar object to attach to Listbox
+        self.scrollbar = tk.Scrollbar(self.lb1, orient="vertical")
+        self.scrollbar.config(command=self.lb1.yview)
+        self.scrollbar.pack(side="right", fill="y")
+        
+        # Configure listbox to fix the scrollbar when moved
+        self.lb1.configure(yscrollcommand=self.scrollbar.set)
 
         # Populate listbox with incorrect questions + answers
         pos = 1
         for ans in self.wrong_ans:
-            self.lb1.insert(pos, f"Q: {ans[0]}")
+            print(f"pos: {pos}")
+            self.lb1.insert(pos, f"Q:  {ans[0]}")
             pos += 1
-            self.lb1.insert(pos, f"  A: {ans[1]}")
+            self.lb1.insert(pos, f"  A:  {str(ans[1]).strip('[]')}")
             pos += 1
+            
+            # insert blank line between questions
+            if pos % 3 == 0:
+                self.lb1.insert(pos, "")
+                pos += 1
 
         self.lb1.pack(expand=True, fill="both")
 
@@ -119,7 +133,16 @@ class QuizGame(tk.Tk):
         self.game_mode = quiz_type
         self.user_answer = tk.StringVar()
 
-        # Lists to keep track of questions/answers
+        '''
+        The following lists/dicts below are important,
+        here the purpose of each of them:
+        
+        questions_dict = stores questions with corresponding answers
+        question_list = used for just shuffling and displaying questions
+        correct_answers = correct answers for a particular question
+        wrong_answers = for questions the user got incorrect -- displayed at the end
+        '''
+        
         self.questions_dict = {}
         self.question_list = []
         self.correct_answers = []
@@ -157,7 +180,7 @@ class QuizGame(tk.Tk):
             with open(self.questions_file, "r") as csv_file:
                 c = reader(csv_file)
                 for row in c:
-                    self.questions_dict.update({row[0]: row[1::]})
+                    self.questions_dict.update({row[0] : row[1::]})
         except FileNotFoundError:
             messagebox.showerror(
                 "Error!", "Your CSV file is no longer present.\n\nPlease restart the application and select a CSV file.")
@@ -189,7 +212,7 @@ class QuizGame(tk.Tk):
 
             # populate list of correct answers
             self.correct_answers = []
-            [self.correct_answers.append(i.lower().strip())
+            [self.correct_answers.append(i.strip())
                 for i in self.questions_dict.get(self.question)]
         else:
             self.end_game()
@@ -202,7 +225,6 @@ class QuizGame(tk.Tk):
             bad_chars = [",", "-", "/"]
             for x in bad_chars:
                 answer = answer.replace(x, "")
-
             return answer
 
         # increment the question counter
@@ -211,23 +233,17 @@ class QuizGame(tk.Tk):
         # strip leading spaces and change case of submitted answer
         submitted_answer = self.user_answer.get().strip().lower()
 
-        # sanitize the correct answers list
-        for i in range(len(self.correct_answers)):
-            self.correct_answers[i] = sanitize(self.correct_answers[i])
-
-        # sanitize the user submitted answer
-        submitted_answer = sanitize(submitted_answer)
-
         # Correct answer condition
-        if submitted_answer.lower() in self.correct_answers:
+        if sanitize(submitted_answer).lower() in [ sanitize(self.correct_answers[i]).lower() for i in range(len(self.correct_answers)) ]:
             MessageBox(True, self.user_answer.get(), self.correct_answers)
             self.questions_correct += 1
 
         # Wrong answer condition
         else:
             MessageBox(False, self.user_answer.get(), self.correct_answers)
+                
             self.wrong_answers.append([self.question, self.correct_answers])
-            print(self.wrong_answers)
+            # print(self.wrong_answers)
 
 # Update the question + answer entry labels
     def update_widgets(self):
@@ -243,8 +259,7 @@ class QuizGame(tk.Tk):
 
 # rudimentary function to adjust question if it goes off screen
     def size_question(self):
-        # print(
-        #    f"\nQuestion label width: {self.label_question.winfo_width()} pixels")
+        # print(f"\nQuestion label width: {self.label_question.winfo_width()} pixels")
 
         question_words = self.question.split()
         question_wc = len(question_words)
