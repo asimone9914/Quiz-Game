@@ -26,6 +26,8 @@ If you are on Linux, you will have to install the tkinter module for Python as w
 Ensure that it is working by running `python -m tkinter`
 
 # Recent Changes:
+- enhanced formatting of the Game Summary window.
+  - also added a scrollbar
 - very basic question sizing for when question is too long (needs tweaking)
 - added input sanitation
 - slight UI redesign
