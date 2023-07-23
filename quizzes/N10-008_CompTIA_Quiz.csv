@@ -2,10 +2,8 @@ Which protocol would a MIB be associated with?, SNMP
 Which version of 802.11 was the first to support MU-MIMO?, ac, 802.11ac, 802.11 ac
 Which version of WPA would SAE be associated with?, 3, WPA3
 What is a frame that is less than 64 bytes called?, Runt
-A giant is a frame that is more than ____ bytes:, 1518
+A giant is a frame that is more than ____ bytes:, 1518, 1500
 What is the maximum range of 40GBASE-T?, 30m, 30 meters
 (T/F):  100BASE-SX uses Laser optics., False, F
 What is the maximum range for 1000BASE-LX?, 5km, 5 kilometers
 Which category Ethernet cable would most likely be used with 10GBASE-T?, Cat6, Cat6a, Cat 6, Cat 6a, 6, 6a
-
-  
